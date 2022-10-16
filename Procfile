@@ -1,1 +1,1 @@
-web: gunicorn app:diagflow
+web: gunicorn app:app
