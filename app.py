@@ -6,10 +6,13 @@ import requests
 app = Flask(__name__)
 app.debug = True
 
-# @app.route('/')
-# def Hello():
-#     return '{"Hello" : "World"}'
+# ROUTE 1 - to print my student number in JSON format
+@app.route('/')
+def studentNumber():
+    dictionary =  {"Student Number" : "200506536"}
+    return json.dumps(dictionary)
 
+# ROUTE 2 - code to run the diagflow fullfilment
 @app.route('/webhook',methods=['POST'])
 def index():
     #Get the formula1-gossip entity from the dialogflow fullfilment request.
@@ -18,14 +21,16 @@ def index():
     season = body['queryResult']['parameters']['season-checker']
     round = body['queryResult']['parameters']['round-checker']
 
-    #Connect to the API anf get the JSON file.
+    #Connect to the API and get the JSON file.
     api_url = 'http://ergast.com/api/'+series+'/'+season+'/'+round+'/results.json'
-    # api_url = 'http://ergast.com/api/f1/2021/1/results.json'
-    headers = {'Content-Type': 'application/json'} #Set the HTTP header for the API request
-    response = requests.get(api_url, headers=headers) #Connect to f1 API and read the JSON response.
-    r=response.json() #Convert the JSON string to a dict for easier parsing.
+    #Set the HTTP header for the API request
+    headers = {'Content-Type': 'application/json'} 
+    #Connect to f1 API and read the JSON response.
+    response = requests.get(api_url, headers=headers) 
+    #Convert the JSON string to a dict for easier parsing.
+    r=response.json()
 
-    #Extract weather data we want from the dict and conver to strings to make it easy to generate the dialogflow reply.
+    #Extract first & last name from the dict and conver to strings to make it easy to generate the dialogflow reply.
     given_name = str(r["MRData"]["RaceTable"]["Races"][0]["Results"][0]["Driver"]["givenName"])
     family_name = str(r["MRData"]["RaceTable"]["Races"][0]["Results"][0]["Driver"]["familyName"])
 
